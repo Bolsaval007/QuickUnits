@@ -8,9 +8,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,6 +21,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.deltadj.quickunits.ui.theme.QuickUnitsTheme
+import androidx.compose.ui.res.painterResource
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -130,7 +128,11 @@ fun MainScreen(navController: androidx.navigation.NavController, usuario: String
     var selectedItem by remember { mutableStateOf(0) }
 
     val items = listOf("Longitud", "Masa", "Velocidad")
-    val icons = listOf(Icons.Filled.Home, Icons.Filled.Search, Icons.Filled.Settings)
+    val icons = listOf(
+        painterResource(id = R.drawable.icons8_longitud),
+        painterResource(id = R.drawable.icons8_peso),
+        painterResource(id = R.drawable.icons8_velocidad)
+    )
 
     Scaffold(
         topBar = {
@@ -165,7 +167,7 @@ fun MainScreen(navController: androidx.navigation.NavController, usuario: String
             NavigationBar {
                 items.forEachIndexed { index, item ->
                     NavigationBarItem(
-                        icon = { Icon(icons[index], contentDescription = item) },
+                        icon = { Icon(painter = icons[index], contentDescription = item, modifier = Modifier.size(32.dp)) },
                         label = { Text(item) },
                         selected = selectedItem == index,
                         onClick = { selectedItem = index }
