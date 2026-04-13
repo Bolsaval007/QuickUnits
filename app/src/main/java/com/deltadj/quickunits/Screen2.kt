@@ -14,6 +14,6 @@ fun Screen2() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Masa", fontSize = 32.sp)
+        Text(text = "Masita", fontSize = 32.sp)
     }
 }
