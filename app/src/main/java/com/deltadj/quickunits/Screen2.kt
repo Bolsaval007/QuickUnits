@@ -1,19 +1,120 @@
 package com.deltadj.quickunits
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Screen2() {
+    val conversiones = listOf(
+        "KG → Libras",
+        "KG → Gramos",
+        "Toneladas → KG",
+        "Onzas → Gramos"
+    )
+    var seleccion by remember { mutableStateOf(conversiones[0]) }
+    var expanded by remember { mutableStateOf(false) }
+    var valor by remember { mutableStateOf("") }
+    var resultado by remember { mutableStateOf("") }
+
     Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Masita", fontSize = 32.sp)
+        Text("Masa", fontSize = 28.sp, fontWeight = FontWeight.Bold)
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded }
+        ) {
+            OutlinedTextField(
+                value = seleccion,
+                onValueChange = {},
+                readOnly = true,
+                label = { Text("Tipo de conversión") },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .menuAnchor()
+            )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                conversiones.forEach { opcion ->
+                    DropdownMenuItem(
+                        text = { Text(opcion) },
+                        onClick = {
+                            seleccion = opcion
+                            expanded = false
+                            resultado = ""
+                            valor = ""
+                        }
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = valor,
+            onValueChange = { valor = it },
+            label = { Text("Ingresa el valor") },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = {
+                val num = valor.toDoubleOrNull()
+                if (num != null) {
+                    resultado = when (seleccion) {
+                        "KG → Libras" -> "%.4f Libras".format(num * 2.20462)
+                        "KG → Gramos" -> "%.2f Gramos".format(num * 1000)
+                        "Toneladas → KG" -> "%.2f KG".format(num * 1000)
+                        "Onzas → Gramos" -> "%.4f Gramos".format(num * 28.3495)
+                        else -> ""
+                    }
+                } else {
+                    resultado = "⚠️ Ingresa un número válido"
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Convertir")
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        if (resultado.isNotEmpty()) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                )
+            ) {
+                Text(
+                    text = "Resultado: $resultado",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+        }
     }
 }
