@@ -57,7 +57,7 @@ fun LoginScreen(navController: androidx.navigation.NavController) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(200.dp)
+                .height(250.dp)
                 .background(MaterialTheme.colorScheme.primary),
             contentAlignment = Alignment.Center
         ) {
@@ -65,9 +65,9 @@ fun LoginScreen(navController: androidx.navigation.NavController) {
                 Image(
                     painter = painterResource(id = R.drawable.icons8_regla_64),
                     contentDescription = "Logo",
-                    modifier = Modifier.size(100.dp)
+                    modifier = Modifier.size(115.dp)
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = "QuickUnits",
                     fontSize = 32.sp,
@@ -167,7 +167,7 @@ fun MainScreen(navController: androidx.navigation.NavController, usuario: String
             NavigationBar {
                 items.forEachIndexed { index, item ->
                     NavigationBarItem(
-                        icon = { Icon(painter = icons[index], contentDescription = item, modifier = Modifier.size(32.dp)) },
+                        icon = { Icon(painter = icons[index], contentDescription = item, modifier = Modifier.size(45.dp)) },
                         label = { Text(item) },
                         selected = selectedItem == index,
                         onClick = { selectedItem = index }
