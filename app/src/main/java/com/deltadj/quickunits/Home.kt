@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
+fun Home() {
     val conversiones = listOf(
         "CM → Pulgadas",
         "KM → Millas",
