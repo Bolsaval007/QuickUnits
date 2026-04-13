@@ -1,19 +1,120 @@
 package com.deltadj.quickunits
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Screen3() {
+    val conversiones = listOf(
+        "KM/H → M/S",
+        "KM/H → MPH",
+        "M/S → KM/H",
+        "MPH → KM/H"
+    )
+    var seleccion by remember { mutableStateOf(conversiones[0]) }
+    var expanded by remember { mutableStateOf(false) }
+    var valor by remember { mutableStateOf("") }
+    var resultado by remember { mutableStateOf("") }
+
     Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Velocidad", fontSize = 32.sp)
+        Text("Velocidad", fontSize = 28.sp, fontWeight = FontWeight.Bold)
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded }
+        ) {
+            OutlinedTextField(
+                value = seleccion,
+                onValueChange = {},
+                readOnly = true,
+                label = { Text("Tipo de conversión") },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .menuAnchor()
+            )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                conversiones.forEach { opcion ->
+                    DropdownMenuItem(
+                        text = { Text(opcion) },
+                        onClick = {
+                            seleccion = opcion
+                            expanded = false
+                            resultado = ""
+                            valor = ""
+                        }
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = valor,
+            onValueChange = { valor = it },
+            label = { Text("Ingresa el valor") },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = {
+                val num = valor.toDoubleOrNull()
+                if (num != null) {
+                    resultado = when (seleccion) {
+                        "KM/H → M/S" -> "%.4f M/S".format(num * 0.277778)
+                        "KM/H → MPH" -> "%.4f MPH".format(num * 0.621371)
+                        "M/S → KM/H" -> "%.4f KM/H".format(num * 3.6)
+                        "MPH → KM/H" -> "%.4f KM/H".format(num * 1.60934)
+                        else -> ""
+                    }
+                } else {
+                    resultado = "⚠️ Ingresa un número válido"
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Convertir")
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        if (resultado.isNotEmpty()) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                )
+            ) {
+                Text(
+                    text = "Resultado: $resultado",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+        }
     }
 }
